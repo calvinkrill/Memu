@@ -156,9 +156,17 @@ export default function ChatWindow({ currentUser, onSignOut, onProfileUpdate }: 
       });
       if (response.ok) {
         const data = await response.json();
-        // Remove self from discoverable users list
-        const filtered = data.filter((u: User) => u.username !== currentUser.username);
-        setUsers(filtered);
+        // Include current user as online, then add other users
+        const currentUserObj: User = {
+          username: currentUser.username,
+          nickname: currentUser.nickname,
+          gender: currentUser.gender,
+          publicKeyJwk: {},
+          isOnline: true,
+        };
+        const otherUsers = data.filter((u: User) => u.username !== currentUser.username);
+        const usersWithOnlineStatus = [currentUserObj, ...otherUsers.map((u: User) => ({ ...u, isOnline: true }))];
+        setUsers(usersWithOnlineStatus);
       }
     } catch (err) {
       console.error('Failed to fetch user list:', err);
@@ -892,7 +900,7 @@ export default function ChatWindow({ currentUser, onSignOut, onProfileUpdate }: 
               </div>
               <div className="space-y-1.5">
                 {users.length === 0 ? (
-                  <span className="text-xs text-slate-500 block px-2 italic">No other users online yet.</span>
+                  <span className="text-xs text-slate-500 block px-2 italic">No users online yet.</span>
                 ) : (
                   users.slice(0, 10).map((u) => (
                     <div
@@ -905,23 +913,30 @@ export default function ChatWindow({ currentUser, onSignOut, onProfileUpdate }: 
                         className="flex items-center gap-2.5 text-left transition-transform active:scale-[0.98] cursor-pointer focus:outline-none min-w-0 flex-1"
                         title="Click to view profile"
                       >
-                        <PixelAvatar seed={u.username} gender={u.gender} size={30} className="ring-2 ring-red-500/10 hover:ring-red-500/40 shrink-0" />
+                        <div className="relative shrink-0">
+                          <PixelAvatar seed={u.username} gender={u.gender} size={30} className="ring-2 ring-red-500/10 hover:ring-red-500/40" />
+                          {u.isOnline && (
+                            <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 rounded-full ring-1 ring-stone-950 animate-pulse"></span>
+                          )}
+                        </div>
                         <div className="min-w-0">
-                          <span className="text-xs font-medium text-slate-300 block truncate group-hover:text-white">{u.nickname}</span>
+                          <span className="text-xs font-medium text-slate-300 block truncate group-hover:text-white">{u.nickname}{u.username === currentUser.username ? ' (You)' : ''}</span>
                           <span className="text-[10px] text-red-400/60 font-mono block truncate">@{u.username}</span>
                         </div>
                       </button>
-                      
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setSelectedDmPartner(u);
-                          setActiveTab('dms');
-                        }}
-                        className="px-2.5 py-1 bg-stone-900 border border-red-950/20 text-[10px] text-red-450 hover:bg-red-800 hover:text-white transition-all rounded-lg shrink-0 font-medium ml-2 cursor-pointer"
-                      >
-                        Message
-                      </button>
+
+                      {u.username !== currentUser.username && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setSelectedDmPartner(u);
+                            setActiveTab('dms');
+                          }}
+                          className="px-2.5 py-1 bg-stone-900 border border-red-950/20 text-[10px] text-red-450 hover:bg-red-800 hover:text-white transition-all rounded-lg shrink-0 font-medium ml-2 cursor-pointer"
+                        >
+                          Message
+                        </button>
+                      )}
                     </div>
                   ))
                 )}
@@ -950,10 +965,10 @@ export default function ChatWindow({ currentUser, onSignOut, onProfileUpdate }: 
               </div>
   
               <div className="space-y-1.5">
-                {filteredUsers.length === 0 ? (
-                  <span className="text-xs text-slate-500 block px-2 italic">No users match your search.</span>
+                {filteredUsers.filter(u => u.username !== currentUser.username).length === 0 ? (
+                  <span className="text-xs text-slate-500 block px-2 italic">No other users match your search.</span>
                 ) : (
-                  filteredUsers.map((u) => (
+                  filteredUsers.filter(u => u.username !== currentUser.username).map((u) => (
                     <div
                       key={u.username}
                       className={`w-full flex items-center justify-between p-2.5 rounded-xl border transition-all ${
@@ -968,19 +983,28 @@ export default function ChatWindow({ currentUser, onSignOut, onProfileUpdate }: 
                         className="flex items-center gap-2.5 text-left cursor-pointer focus:outline-none min-w-0"
                         title="Click to view profile"
                       >
-                        <PixelAvatar 
-                          seed={u.username} 
-                          gender={u.gender} 
-                          size={32} 
-                          className={selectedDmPartner?.username === u.username ? 'ring-2 ring-red-500/50' : 'ring-2 ring-red-500/10'}
-                        />
+                        <div className="relative shrink-0">
+                          <PixelAvatar
+                            seed={u.username}
+                            gender={u.gender}
+                            size={32}
+                            className={selectedDmPartner?.username === u.username ? 'ring-2 ring-red-500/50' : 'ring-2 ring-red-500/10'}
+                          />
+                          {u.isOnline && (
+                            <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 rounded-full ring-1 ring-stone-900 animate-pulse"></span>
+                          )}
+                        </div>
                         <div className="min-w-0">
                           <div className="flex items-center gap-1">
                             <span className="text-xs font-semibold text-slate-200 truncate block">
                               {u.nickname}
                             </span>
-                            <span className="text-[8px] px-1 bg-red-400/10 text-red-405 border border-red-500/20 font-mono rounded-full scale-90">
-                              🔒 Keys Secured
+                            <span className={`text-[8px] px-1 border font-mono rounded-full scale-90 ${
+                              u.isOnline
+                                ? 'bg-green-500/10 text-green-405 border-green-500/20'
+                                : 'bg-slate-600/10 text-slate-405 border-slate-500/20'
+                            }`}>
+                              {u.isOnline ? '🟢 Online' : '⚫ Offline'}
                             </span>
                           </div>
                           <span className="text-[10px] text-red-400/60 font-mono block truncate">@{u.username}</span>
@@ -1507,11 +1531,19 @@ export default function ChatWindow({ currentUser, onSignOut, onProfileUpdate }: 
                 <div className="flex justify-between items-center text-xs">
                   <span className="text-slate-500 font-medium font-mono">Connection Status:</span>
                   {selectedProfileUser.username === currentUser.username ? (
-                    <span className="font-semibold text-rose-455">This is you</span>
-                  ) : (
+                    <span className="font-semibold text-rose-455 flex items-center gap-1 font-mono">
+                      <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                      Online (You)
+                    </span>
+                  ) : selectedProfileUser.isOnline ? (
                     <span className="font-semibold text-green-405 flex items-center gap-1 font-mono">
                       <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
                       Online now
+                    </span>
+                  ) : (
+                    <span className="font-semibold text-slate-500 flex items-center gap-1 font-mono">
+                      <span className="w-2 h-2 bg-slate-600 rounded-full"></span>
+                      Offline
                     </span>
                   )}
                 </div>
