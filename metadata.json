@@ -1,0 +1,6 @@
+{
+  "name": "Secure World Chat",
+  "description": "A real-time global forum and secure private message board featuring end-to-end encryption and custom procedurally generated pixel avatars.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

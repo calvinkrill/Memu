@@ -1,0 +1,39 @@
+@import "tailwindcss";
+
+@layer utilities {
+  /* Hide scrollbars but keep functionality */
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+  .scrollbar-none {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+}
+
+/* Global scrollbar transparency and styling */
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+  background-color: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(239, 68, 68, 0.12);
+  border-radius: 9999px;
+  transition: background-color 0.2s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(239, 68, 68, 0.35);
+}
+
+::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+/* For Firefox global */
+* {
+  scrollbar-color: rgba(239, 68, 68, 0.12) transparent;
+  scrollbar-width: thin;
+}
