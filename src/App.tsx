@@ -11,6 +11,7 @@
 import { useState, useEffect } from 'react';
 import Auth from './components/Auth';
 import ChatWindow from './components/ChatWindow';
+import Splash from './components/Splash';
 import { Gender } from './types';
 
 interface AuthUser {
@@ -23,6 +24,7 @@ interface AuthUser {
 export default function App() {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [initializing, setInitializing] = useState(true);
+  const [showSplash, setShowSplash] = useState(true);
 
   // Read session on boot
   useEffect(() => {
@@ -103,10 +105,11 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100">
+      {showSplash && <Splash onComplete={() => setShowSplash(false)} />}
       {user ? (
-        <ChatWindow 
-          currentUser={user} 
-          onSignOut={handleSignOut} 
+        <ChatWindow
+          currentUser={user}
+          onSignOut={handleSignOut}
           onProfileUpdate={handleProfileUpdate}
         />
       ) : (
@@ -115,4 +118,3 @@ export default function App() {
     </div>
   );
 }
-
