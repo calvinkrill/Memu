@@ -10,7 +10,8 @@ export interface User {
   nickname: string;
   gender: Gender;
   publicKeyJwk: JsonWebKey;
-  createdAt: string;
+  createdAt?: string;
+  isOnline?: boolean;
 }
 
 export interface WorldMessage {

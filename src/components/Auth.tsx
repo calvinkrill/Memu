@@ -6,6 +6,7 @@
 import React, { useState, useEffect } from 'react';
 import { User as UserIcon, Lock, Sparkles, Shield, UserX, ArrowRight, Eye, EyeOff } from 'lucide-react';
 import PixelAvatar from './PixelAvatar';
+import { Logo } from './Logo';
 import { generateE2EKeys, backupPrivateKey, recoverPrivateKey } from '../utils/crypto';
 import { Gender } from '../types';
 
@@ -210,13 +211,16 @@ export default function Auth({ onSuccess }: AuthProps) {
         
         {/* Title area */}
         <div className="text-center mb-8">
+          <div className="flex justify-center mb-4">
+            <Logo size={56} />
+          </div>
+          <h1 className="text-4xl font-extrabold tracking-tight bg-gradient-to-r from-red-400 via-rose-200 to-amber-200 bg-clip-text text-transparent mb-2">
+            Memu
+          </h1>
           <div className="inline-flex items-center gap-2 px-3 py-1 bg-red-500/10 border border-red-500/20 rounded-full text-red-400 text-xs font-mono mb-3">
             <Shield size={12} />
             <span>End-to-End Encrypted E2EE</span>
           </div>
-          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-red-400 via-rose-200 to-amber-200 bg-clip-text text-transparent">
-            Secure World Chat
-          </h1>
           <p className="text-sm text-slate-400 mt-2">
             No emails needed. Absolute zero-knowledge communication node.
           </p>
