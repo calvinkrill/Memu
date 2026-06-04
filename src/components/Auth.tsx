@@ -207,27 +207,27 @@ export default function Auth({ onSuccess }: AuthProps) {
       <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-red-600/15 rounded-full blur-3xl pointer-events-none"></div>
       <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-rose-500/10 rounded-full blur-3xl pointer-events-none"></div>
 
-      <div id="auth-card" className="w-full max-w-md bg-stone-900/80 border border-red-900/30 rounded-2xl shadow-[0_0_50px_-12px_rgba(239,68,68,0.25)] overflow-hidden p-8 relative z-10 backdrop-blur-xl">
-        
+      <div id="auth-card" className="w-full max-w-md bg-stone-900/80 border border-red-900/30 rounded-2xl shadow-[0_0_50px_-12px_rgba(239,68,68,0.25)] overflow-hidden p-6 relative z-10 backdrop-blur-xl">
+
         {/* Title area */}
-        <div className="text-center mb-8">
-          <div className="flex justify-center mb-4">
-            <Logo size={56} />
+        <div className={`text-center ${isLogin ? 'mb-6' : 'mb-4'}`}>
+          <div className="flex justify-center mb-3">
+            <Logo size={48} />
           </div>
-          <h1 className="text-4xl font-extrabold tracking-tight bg-gradient-to-r from-red-400 via-rose-200 to-amber-200 bg-clip-text text-transparent mb-2">
+          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-red-400 via-rose-200 to-amber-200 bg-clip-text text-transparent mb-1">
             Memu
           </h1>
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-red-500/10 border border-red-500/20 rounded-full text-red-400 text-xs font-mono mb-3">
-            <Shield size={12} />
+          <div className={`inline-flex items-center gap-2 px-3 py-1 bg-red-500/10 border border-red-500/20 rounded-full text-red-400 text-[10px] font-mono ${isLogin ? 'mb-2' : 'mb-1'}`}>
+            <Shield size={10} />
             <span>End-to-End Encrypted E2EE</span>
           </div>
-          <p className="text-sm text-slate-400 mt-2">
-            No emails needed. Absolute zero-knowledge communication node.
+          <p className={`text-slate-400 ${isLogin ? 'text-xs mt-1' : 'text-[11px] mt-0.5'}`}>
+            No emails needed. Zero-knowledge node.
           </p>
         </div>
 
         {/* Tab Switches */}
-        <div className="flex border-b border-stone-800 mb-6 font-mono">
+        <div className="flex border-b border-stone-800 mb-4 font-mono">
           <button
             id="tab-login"
             type="button"
@@ -258,23 +258,23 @@ export default function Auth({ onSuccess }: AuthProps) {
           </button>
         </div>
 
-        {/* Avatar Live Preview (Signup only, but nice to show as a custom aesthetic!) */}
-        <div className="flex flex-col items-center mb-6">
-          <div className="relative group">
-            <PixelAvatar
-              seed={username.trim() || 'default_preview_seed'}
-              gender={gender}
-              size={80}
-              className="border-2 border-red-950/50 bg-stone-950 p-1 shadow-lg ring-4 ring-red-500/10"
-            />
-            {!isLogin && (
-              <div className="absolute -bottom-2 bg-gradient-to-r from-red-600 to-rose-600 border border-rose-400 text-[10px] uppercase font-mono px-2 py-0.5 rounded shadow-md text-white flex items-center gap-1">
-                <Sparkles size={8} />
-                <span>Your Unique Avatar</span>
+        {/* Avatar Live Preview (Signup only) */}
+        {!isLogin && (
+          <div className="flex flex-col items-center mb-4">
+            <div className="relative group">
+              <PixelAvatar
+                seed={username.trim() || 'default_preview_seed'}
+                gender={gender}
+                size={72}
+                className="border-2 border-red-950/50 bg-stone-950 p-1 shadow-lg ring-4 ring-red-500/10"
+              />
+              <div className="absolute -bottom-1 bg-gradient-to-r from-red-600 to-rose-600 border border-rose-400 text-[9px] uppercase font-mono px-2 py-0.5 rounded shadow-md text-white flex items-center gap-1">
+                <Sparkles size={7} />
+                <span>Your Avatar</span>
               </div>
-            )}
+            </div>
           </div>
-        </div>
+        )}
 
         {error && (
           <div className="flex items-start gap-2.5 p-3.5 bg-red-500/10 border border-red-500/20 text-red-400 text-xs rounded-xl mb-6">
@@ -283,9 +283,9 @@ export default function Auth({ onSuccess }: AuthProps) {
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-3">
           <div>
-            <label className="block text-xs font-mono uppercase text-slate-400 mb-1.5 font-semibold">Username (Unique handle)</label>
+            <label className="block text-xs font-mono uppercase text-slate-400 mb-1 font-semibold">Username</label>
             <div className="relative">
               <span className="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-500">
                 <UserIcon size={16} />
@@ -316,7 +316,7 @@ export default function Auth({ onSuccess }: AuthProps) {
 
           {!isLogin && (
             <div>
-              <label className="block text-xs font-mono uppercase text-slate-400 mb-1.5 font-semibold">Display Nickname</label>
+              <label className="block text-xs font-mono uppercase text-slate-400 mb-1 font-semibold">Display Nickname</label>
               <div className="relative">
                 <span className="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-500">
                   <Sparkles size={16} />
@@ -336,7 +336,7 @@ export default function Auth({ onSuccess }: AuthProps) {
           )}
 
           <div>
-            <label className="block text-xs font-mono uppercase text-slate-400 mb-1.5 font-semibold">Password</label>
+            <label className="block text-xs font-mono uppercase text-slate-400 mb-1 font-semibold">Password</label>
             <div className="relative">
               <span className="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-500">
                 <Lock size={16} />
@@ -400,7 +400,7 @@ export default function Auth({ onSuccess }: AuthProps) {
             id="btn-submit-auth"
             type="submit"
             disabled={loading}
-            className="w-full bg-gradient-to-r from-red-700 to-rose-600 hover:from-red-600 hover:to-rose-550 border border-red-500/30 text-white rounded-xl py-3 text-sm font-semibold transition-all mt-6 shadow-lg shadow-rose-950/40 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 disabled:pointer-events-none"
+            className="w-full bg-gradient-to-r from-red-700 to-rose-600 hover:from-red-600 hover:to-rose-550 border border-red-500/30 text-white rounded-xl py-2.5 text-sm font-semibold transition-all mt-4 shadow-lg shadow-rose-950/40 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 disabled:pointer-events-none"
           >
             {loading ? (
               <div className="flex items-center gap-2">
@@ -416,9 +416,9 @@ export default function Auth({ onSuccess }: AuthProps) {
           </button>
         </form>
 
-        <div className="mt-6 text-center text-xs text-slate-400 select-none">
-          <p className="max-w-[280px] mx-auto text-[10px] leading-relaxed text-slate-500">
-            * All local keys are stored strictly in-memory or inside your secure browser's local sandbox data partition. Keys never leave your machine unencrypted.
+        <div className="mt-4 text-center text-xs text-slate-400 select-none">
+          <p className="max-w-[280px] mx-auto text-[9px] leading-relaxed text-slate-500">
+            * All local keys are stored in-memory or inside your browser's secure sandbox. Keys never leave unencrypted.
           </p>
         </div>
 
